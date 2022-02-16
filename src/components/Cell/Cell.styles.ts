@@ -13,6 +13,8 @@ export const CellContainer = styled.div`
   }
 `;
 
+const backgroundColor = `#1a1a1c`;
+
 export const CellInput = styled(Form.Control)`
   position: absolute;
   width: 100%;
@@ -20,7 +22,14 @@ export const CellInput = styled(Form.Control)`
   border-radius: 0;
   font-size: 2rem;
   text-align: center;
+  background-color: ${backgroundColor};
+  color: #fff;
+  &:focus {
+    color: #fff;
+    background-color: ${backgroundColor};
+  }
   &:disabled {
+    background-color: ${backgroundColor};
     cursor: not-allowed;
   }
 `;

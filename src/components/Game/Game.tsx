@@ -52,7 +52,6 @@ const Game = () => {
             board: round.board.map((row, rIndex) => {
               return row.map((cell, cIndex) => {
                 if (rIndex === rowIndex && cIndex === cellIndex) {
-                  console.log('....', value);
                   return { ...cell, letter: value.toUpperCase() };
                 }
                 return cell;
@@ -63,16 +62,34 @@ const Game = () => {
         currentRoundIndex: currentState?.currentRoundIndex
       } as GameState;
     });
-    console.log('cell to focus', cellToFocus);
     cellToFocus && cellToFocus.focus();
   };
 
+  const onRowSubmit = async () => {
+    console.log('on row submit');
+    setGameState((currentState) => {
+      return {
+        ...currentState,
+        rounds: currentState?.rounds.map((round, index) => {
+          if (index !== currentState?.currentRoundIndex) {
+            return round;
+          }
+          return {
+            ...round,
+            currentBoardRow: round.currentBoardRow + 1
+          };
+        })
+      } as GameState;
+    });
+    return;
+  };
+
   return (<>
-    <h1>Game</h1>
     {gameState && <Board
       board={gameState?.rounds[gameState.currentRoundIndex].board}
       currentRow={gameState.rounds[gameState.currentRoundIndex].currentBoardRow}
       onChange={onChange}
+      onRowSubmit={onRowSubmit}
     />}
   </>);
 };
