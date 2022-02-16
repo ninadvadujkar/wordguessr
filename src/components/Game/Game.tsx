@@ -37,7 +37,7 @@ const Game = () => {
     });
   }, [params]);
 
-  const onChange = (rowIndex: number, cellIndex: number, value: string) => {
+  const onChange = (rowIndex: number, cellIndex: number, value: string, cellToFocus?: HTMLInputElement) => {
     if (value && !isLetter(value)) {
       return;
     }
@@ -63,6 +63,8 @@ const Game = () => {
         currentRoundIndex: currentState?.currentRoundIndex
       } as GameState;
     });
+    console.log('cell to focus', cellToFocus);
+    cellToFocus && cellToFocus.focus();
   };
 
   return (<>
