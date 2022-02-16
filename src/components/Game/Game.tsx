@@ -20,7 +20,8 @@ const Game = () => {
 
     const decodedGameId = window.atob(params.gameId);
     const wordsToGuess = JSON.parse(decodedGameId) as string[];
-    const rounds = wordsToGuess.map((word, index) => {
+    console.log('words', wordsToGuess);
+    const rounds = wordsToGuess.map((word) => {
       return {
         outcomeState: RoundOutcomeState.INDETERMINATE,
         wordToGuess: word,
@@ -87,6 +88,7 @@ const Game = () => {
   return (<>
     {gameState && <Board
       board={gameState?.rounds[gameState.currentRoundIndex].board}
+      // wordToGuess={gameState?.rounds[gameState.currentRoundIndex].}
       currentRow={gameState.rounds[gameState.currentRoundIndex].currentBoardRow}
       onChange={onChange}
       onRowSubmit={onRowSubmit}
