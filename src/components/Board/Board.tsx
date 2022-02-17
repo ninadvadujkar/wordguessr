@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
-import { BoardData } from '../../types/common.types';
+import { BoardData, CellData } from '../../types/common.types';
 import Cell from '../Cell/Cell';
 import ToastMessage from '../Toast/Toast';
 import { dictionary } from '../../words-dictionary';
 import * as S from './Board.styles';
+import { LetterFoundState } from '../../enums/common.enums';
+import { createHashOfIndexes } from '../../utils/common.utils';
 
 interface Props {
   board: BoardData;
-  // wordToGuess: string;
+  wordToGuess: string;
   currentRow: number;
   onChange: (rowIndex: number, cellIndex: number, value: string, cellToFocus?: HTMLInputElement) => void;
-  onRowSubmit: () => Promise<void>;
+  onRowSubmit: (updatedRow: CellData[]) => Promise<void>;
 }
 
-const Board: React.FC<Props> = ({ board, currentRow, onChange, onRowSubmit }) => {
+const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRowSubmit }) => {
   const [references, setReferences] = useState<React.RefObject<HTMLInputElement>[][]>();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -39,32 +41,73 @@ const Board: React.FC<Props> = ({ board, currentRow, onChange, onRowSubmit }) =>
     return undefined;
   };
 
-  const validateGuessedWord = (guessedWord: string) => {
+  const isInvalid = (guessedWord: string) => {
     if (guessedWord.length !== 5) {
       setShowToast(true);
       setToastMessage('Not enough letters');
-      return;
+      return true;
     }
     if (!dictionary.includes(guessedWord)) {
       setShowToast(true);
       setToastMessage('Not in word list');
-      return;
+      return true;
     }
+    return false;
   };
 
-  const guess = () => {
+  const determineGuess = (guessedWord: string): CellData[] => {
+    if (wordToGuess === guessedWord) {
+      return guessedWord.split('').map(letter => ({ letter: letter.toUpperCase(), foundState: LetterFoundState.YES_SAME_INDEX }));
+    }
+
+    const hashOfWordToGuess = createHashOfIndexes(wordToGuess);
+    const hashOfGuessedWord = createHashOfIndexes(guessedWord);
+
+    const updatedRow: CellData[] = [];
+    Object.entries(hashOfGuessedWord).forEach(([key, value]) => {
+      const letter = key.toUpperCase();
+      if (!hashOfWordToGuess[key] || !hashOfWordToGuess[key].length) {
+        value.forEach(i => updatedRow[i] = ({ letter, foundState: LetterFoundState.NO }));
+      } else {
+        value.forEach(i => {
+          const index = hashOfWordToGuess[key].indexOf(i);
+          if (index !== -1) {
+            updatedRow[i] = { letter, foundState: LetterFoundState.YES_SAME_INDEX };
+            hashOfWordToGuess[key].splice(index, 1);
+          }
+        });
+        value.forEach((i, index) => {
+          if (!updatedRow[i]) {
+            if (typeof hashOfWordToGuess[key][index] === 'number') {
+              updatedRow[i] = ({ letter, foundState: LetterFoundState.YES_NO_SAME_INDEX });
+            } else {
+              updatedRow[i] = ({ letter, foundState: LetterFoundState.NO });
+            }
+          }
+        });
+      }
+    });
+    return updatedRow;
+  };
+
+  const guess = (): CellData[] | undefined => {
     const guessedWord = board[currentRow].map(row => row.letter).join('').toLowerCase();
-    validateGuessedWord(guessedWord);
-    console.log('guessed', guessedWord);
+    if (isInvalid(guessedWord)) {
+      return undefined;
+    }
+    return determineGuess(guessedWord);
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log('on submit', event);
-    guess();
-    // await onRowSubmit();
-    // // focus next row's first cell
-    // references && references[currentRow + 1][0].current?.focus();
+    const updatedCellData = guess();
+    if (!updatedCellData) {
+      return;
+    }
+    await onRowSubmit(updatedCellData);
+    // focus next row's first cell
+    references && references[currentRow + 1][0].current?.focus();
   };
 
   return (<S.BoardContainer>

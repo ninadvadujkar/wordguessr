@@ -1,5 +1,6 @@
 import { Form } from 'react-bootstrap';
 import styled from 'styled-components';
+import { LetterFoundState } from '../../enums/common.enums';
 
 export const CellContainer = styled.div`
   position: relative;
@@ -13,7 +14,23 @@ export const CellContainer = styled.div`
   }
 `;
 
-const backgroundColor = `#1a1a1c`;
+const defaultBackgroundColor = `#1a1a1c`;
+const notFoundBackgroundColor = `#3a3a3c`;
+const foundSameIndexBackgroundColor = `#538d4e`;
+const foundNoSameIndexBackgroundColor = `#b59f3b`;
+
+const determineCellBackgroundColor = (foundState: LetterFoundState) => {
+  switch (foundState) {
+    case LetterFoundState.INDETERMINATE:
+      return defaultBackgroundColor;
+    case LetterFoundState.NO:
+      return notFoundBackgroundColor;
+    case LetterFoundState.YES_SAME_INDEX:
+      return foundSameIndexBackgroundColor;
+    case LetterFoundState.YES_NO_SAME_INDEX:
+      return foundNoSameIndexBackgroundColor;
+  }
+};
 
 export const CellInput = styled(Form.Control)`
   position: absolute;
@@ -22,14 +39,15 @@ export const CellInput = styled(Form.Control)`
   border-radius: 0;
   font-size: 2rem;
   text-align: center;
-  background-color: ${backgroundColor};
+  background-color: ${defaultBackgroundColor};
   color: #fff;
   &:focus {
     color: #fff;
-    background-color: ${backgroundColor};
+    background-color: ${defaultBackgroundColor};
   }
   &:disabled {
-    background-color: ${backgroundColor};
+    background-color: ${defaultBackgroundColor};
     cursor: not-allowed;
   }
+  background-color: ${(props) => determineCellBackgroundColor(props.$foundState)} !important
 `;

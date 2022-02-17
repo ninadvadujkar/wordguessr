@@ -10,4 +10,5 @@ export const dictionary = [
   'zacky',
   'diego',
   'eddie',
+  'nordi'
 ];

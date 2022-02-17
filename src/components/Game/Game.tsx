@@ -66,7 +66,7 @@ const Game = () => {
     cellToFocus && cellToFocus.focus();
   };
 
-  const onRowSubmit = async () => {
+  const onRowSubmit = async (updatedRow: CellData[]) => {
     console.log('on row submit');
     setGameState((currentState) => {
       return {
@@ -77,6 +77,12 @@ const Game = () => {
           }
           return {
             ...round,
+            board: round.board.map((row, rIndex) => {
+              if (rIndex !== round.currentBoardRow) {
+                return row;
+              }
+              return updatedRow;
+            }),
             currentBoardRow: round.currentBoardRow + 1
           };
         })
@@ -88,7 +94,7 @@ const Game = () => {
   return (<>
     {gameState && <Board
       board={gameState?.rounds[gameState.currentRoundIndex].board}
-      // wordToGuess={gameState?.rounds[gameState.currentRoundIndex].}
+      wordToGuess={gameState?.rounds[gameState.currentRoundIndex].wordToGuess}
       currentRow={gameState.rounds[gameState.currentRoundIndex].currentBoardRow}
       onChange={onChange}
       onRowSubmit={onRowSubmit}

@@ -10,7 +10,16 @@ export interface CellProps {
 
 const Cell = React.forwardRef(({ cell, disabled, onChange }: CellProps, ref) => {
   return (<S.CellContainer>
-    <S.CellInput ref={ref} type="text" aria-label='cell' maxLength={1} value={cell.letter} disabled={disabled} onChange={(event: React.ChangeEvent<any>) => onChange(event.target.value)} />
+    <S.CellInput
+      ref={ref}
+      type="text"
+      aria-label='cell'
+      maxLength={1}
+      value={cell.letter}
+      disabled={disabled}
+      $foundState={cell.foundState}
+      onChange={(event: React.ChangeEvent<any>) => onChange(event.target.value)}
+    />
   </S.CellContainer>
   );
 });
