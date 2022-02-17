@@ -90,7 +90,7 @@ const Game = () => {
         }),
       } as GameState;
     });
-    if (!outcomeIndeterminate) {
+    if (!outcomeIndeterminate) {      
       setTimeout(() => {
         alert(`You ${outcome} this round`);
         setGameState((currentState) => {
@@ -115,6 +115,7 @@ const Game = () => {
       board={gameState.rounds[gameState.currentRoundIndex].board}
       wordToGuess={gameState.rounds[gameState.currentRoundIndex].wordToGuess}
       currentRow={gameState.rounds[gameState.currentRoundIndex].currentBoardRow}
+      currentRound={gameState.currentRoundIndex}
       onChange={onChange}
       onRowSubmit={onRowSubmit}
     />}

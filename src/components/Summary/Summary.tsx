@@ -7,12 +7,12 @@ interface Props {
 
 const Summary: React.FC<Props> = ({ boards }) => {
   return (
-    <div>
-      {boards.map((board, index) => (<>
+    <S.SummaryContainer>
+      {boards.map((board, index) => (<div key={`summary-round-${index}`}>
         <S.Title>Round {index + 1}</S.Title>
         <Grid {...board} />
-      </>))}
-    </div>
+      </div>))}
+    </S.SummaryContainer>
   );
 };
 

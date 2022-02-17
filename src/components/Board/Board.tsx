@@ -13,14 +13,22 @@ interface Props {
   board: BoardData;
   wordToGuess: string;
   currentRow: number;
+  currentRound: number;
   onChange: (rowIndex: number, cellIndex: number, value: string, cellToFocus?: HTMLInputElement) => void;
   onRowSubmit: (updatedRow: CellData[], outcomeState: RoundOutcomeState) => Promise<void>;
 }
 
-const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRowSubmit }) => {
+const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, currentRound, onChange, onRowSubmit }) => {
   const [references, setReferences] = useState<React.RefObject<HTMLInputElement>[][]>();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+
+  useEffect(() => {
+    if (!references) {
+      return;
+    }
+    references[currentRow][0].current?.focus();
+  }, [references, currentRow, currentRound]);
 
   useEffect(() => {
     setReferences(
@@ -100,10 +108,11 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRo
       outcome = RoundOutcomeState.LOST;
     }
     await onRowSubmit(updatedCellData, outcome);
-    if (outcome === RoundOutcomeState.INDETERMINATE) {
+    console.log('outcome....', outcome);
+    // if (outcome === RoundOutcomeState.INDETERMINATE) {
       // focus next row's first cell
       references && references[currentRow + 1] && references[currentRow + 1][0].current?.focus();
-    }
+    // }
   };
 
   return (<S.BoardContainer>
