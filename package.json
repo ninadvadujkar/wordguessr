@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/ninadvadujkar/wordguessr.git"
   },
+  "homepage": "https://ninadvadujkar.github.io/wordguessr",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
@@ -30,7 +31,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
