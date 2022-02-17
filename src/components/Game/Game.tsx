@@ -4,6 +4,7 @@ import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { CellData, GameState, Round } from '../../types/common.types';
 import { isLetter } from '../../utils/common.utils';
 import Board from '../Board/Board';
+import Summary from '../Summary/Summary';
 import * as S from './Game.styles';
 
 const Game = () => {
@@ -104,14 +105,23 @@ const Game = () => {
   };
 
   return (<>
-    {gameState && <S.Title>Round {gameState.currentRoundIndex + 1} / {gameState.rounds.length}</S.Title>}
-    {gameState && <Board
-      board={gameState?.rounds[gameState.currentRoundIndex].board}
-      wordToGuess={gameState?.rounds[gameState.currentRoundIndex].wordToGuess}
+    {gameState &&
+      <S.Title>{
+        gameState.currentRoundIndex === gameState.rounds.length ?
+          'Summary' :
+          `Round ${gameState.currentRoundIndex + 1} / ${gameState.rounds.length}`}
+      </S.Title>}
+    {gameState && gameState.currentRoundIndex !== gameState.rounds.length && <Board
+      board={gameState.rounds[gameState.currentRoundIndex].board}
+      wordToGuess={gameState.rounds[gameState.currentRoundIndex].wordToGuess}
       currentRow={gameState.rounds[gameState.currentRoundIndex].currentBoardRow}
       onChange={onChange}
       onRowSubmit={onRowSubmit}
     />}
+    {gameState && gameState.currentRoundIndex === gameState.rounds.length && <Summary boards={gameState?.rounds.map(r => ({
+      board: r.board,
+      currentRow: 0
+    }))} />}
   </>);
 };
 

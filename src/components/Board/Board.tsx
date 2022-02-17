@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { Form } from 'react-bootstrap';
 import { BoardData, CellData } from '../../types/common.types';
-import Cell from '../Cell/Cell';
 import ToastMessage from '../Toast/Toast';
+import Grid from '../Grid/Grid';
 import { dictionary } from '../../words-dictionary';
-import * as S from './Board.styles';
 import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { createHashOfIndexes } from '../../utils/common.utils';
+import * as S from './Board.styles';
+
 
 interface Props {
   board: BoardData;
@@ -27,19 +27,6 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRo
       board.map(row => row.map(() => React.createRef()))
     );
   }, []);
-
-  const getCellRef = (currentRow: number, cellIndex: number, value: string) => {
-    if (!references) {
-      return;
-    }
-    if (value && cellIndex !== 4) {
-      return references[currentRow][cellIndex + 1].current as HTMLInputElement;
-    }
-    if (!value && cellIndex !== 0) {
-      return references[currentRow][cellIndex - 1].current as HTMLInputElement;
-    }
-    return undefined;
-  };
 
   const isInvalid = (guessedWord: string) => {
     if (guessedWord.length !== 5) {
@@ -121,26 +108,13 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRo
 
   return (<S.BoardContainer>
     <ToastMessage show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />
-    {board && references && board.map((row, rowIndex) => {
-      return <Form key={rowIndex} onSubmit={onSubmit}>
-        <S.Row key={`row-${rowIndex}`}>
-          {row.map((cell, cellIndex) => <Cell
-            key={`cell-${rowIndex}-${cellIndex}`}
-            ref={references[rowIndex][cellIndex]}
-            cell={cell}
-            disabled={rowIndex !== currentRow}
-            onChange={(value) =>
-              onChange(
-                rowIndex,
-                cellIndex,
-                value,
-                getCellRef(currentRow, cellIndex, value)
-              )}
-          />)}
-        </S.Row>
-        <button type="submit" hidden disabled={rowIndex !== currentRow} aria-hidden="true"></button>
-      </Form>;
-    })}
+    {board && references && <Grid
+      board={board}
+      references={references}
+      currentRow={currentRow}
+      onChange={onChange}
+      onSubmit={onSubmit}
+    />}
   </S.BoardContainer>);
 };
 
