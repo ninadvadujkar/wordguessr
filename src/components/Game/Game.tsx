@@ -12,7 +12,11 @@ const Game = () => {
   const params = useParams();
 
   useEffect(() => {
-    console.log('game state', gameState);
+    if (!gameState) {
+      return;
+    }
+
+    localStorage.setItem('gameState', JSON.stringify(gameState));
   }, [gameState]);
 
   useEffect(() => {
@@ -20,6 +24,14 @@ const Game = () => {
       return;
     }
 
+    const localStorageGameState = localStorage.getItem('gameState');
+    // reset game from last checkpoint if user refreshes or closes browser
+    if (localStorageGameState) {
+      setGameState(JSON.parse(localStorageGameState));
+      return;
+    }
+
+    // start fresh game
     const decodedGameId = window.atob(params.gameId);
     const wordsToGuess = decodedGameId.split(',');
     const rounds = wordsToGuess.map((word) => {

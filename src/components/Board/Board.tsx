@@ -109,10 +109,7 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, currentRound, 
     }
     await onRowSubmit(updatedCellData, outcome);
     console.log('outcome....', outcome);
-    // if (outcome === RoundOutcomeState.INDETERMINATE) {
-      // focus next row's first cell
-      references && references[currentRow + 1] && references[currentRow + 1][0].current?.focus();
-    // }
+    references && references[currentRow + 1] && references[currentRow + 1][0].current?.focus();
   };
 
   return (<S.BoardContainer>
