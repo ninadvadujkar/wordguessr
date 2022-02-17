@@ -4,6 +4,7 @@ import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { CellData, GameState, Round } from '../../types/common.types';
 import { isLetter } from '../../utils/common.utils';
 import Board from '../Board/Board';
+import * as S from './Game.styles';
 
 const Game = () => {
   const [gameState, setGameState] = useState<GameState>();
@@ -19,12 +20,11 @@ const Game = () => {
     }
 
     const decodedGameId = window.atob(params.gameId);
-    const wordsToGuess = JSON.parse(decodedGameId) as string[];
-    console.log('words', wordsToGuess);
+    const wordsToGuess = decodedGameId.split(',');
     const rounds = wordsToGuess.map((word) => {
       return {
         outcomeState: RoundOutcomeState.INDETERMINATE,
-        wordToGuess: word,
+        wordToGuess: word.trim(),
         board: [...Array(6)]
           .map(() =>
             Array(5).fill({ letter: '', foundState: LetterFoundState.INDETERMINATE } as CellData)
@@ -44,6 +44,7 @@ const Game = () => {
     }
     setGameState((currentState) => {
       return {
+        ...currentState,
         rounds: currentState?.rounds.map((round, index) => {
           if (index !== currentState?.currentRoundIndex) {
             return round;
@@ -60,14 +61,13 @@ const Game = () => {
             })
           };
         }),
-        currentRoundIndex: currentState?.currentRoundIndex
       } as GameState;
     });
     cellToFocus && cellToFocus.focus();
   };
 
-  const onRowSubmit = async (updatedRow: CellData[]) => {
-    console.log('on row submit');
+  const onRowSubmit = async (updatedRow: CellData[], outcome: RoundOutcomeState) => {
+    const outcomeIndeterminate = outcome === RoundOutcomeState.INDETERMINATE;
     setGameState((currentState) => {
       return {
         ...currentState,
@@ -77,21 +77,34 @@ const Game = () => {
           }
           return {
             ...round,
+            outcomeState: outcome,
             board: round.board.map((row, rIndex) => {
               if (rIndex !== round.currentBoardRow) {
                 return row;
               }
               return updatedRow;
             }),
-            currentBoardRow: round.currentBoardRow + 1
+            currentBoardRow: outcomeIndeterminate ? round.currentBoardRow + 1 : round.currentBoardRow
           };
-        })
+        }),
       } as GameState;
     });
+    if (!outcomeIndeterminate) {
+      setTimeout(() => {
+        alert(`You ${outcome} this round`);
+        setGameState((currentState) => {
+          return {
+            ...currentState,
+            currentRoundIndex: (currentState?.currentRoundIndex ?? 0) + 1
+          } as GameState;
+        });
+      }, 500);
+    }
     return;
   };
 
   return (<>
+    {gameState && <S.Title>Round {gameState.currentRoundIndex + 1} / {gameState.rounds.length}</S.Title>}
     {gameState && <Board
       board={gameState?.rounds[gameState.currentRoundIndex].board}
       wordToGuess={gameState?.rounds[gameState.currentRoundIndex].wordToGuess}

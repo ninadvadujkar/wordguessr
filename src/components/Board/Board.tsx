@@ -6,7 +6,7 @@ import Cell from '../Cell/Cell';
 import ToastMessage from '../Toast/Toast';
 import { dictionary } from '../../words-dictionary';
 import * as S from './Board.styles';
-import { LetterFoundState } from '../../enums/common.enums';
+import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { createHashOfIndexes } from '../../utils/common.utils';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   wordToGuess: string;
   currentRow: number;
   onChange: (rowIndex: number, cellIndex: number, value: string, cellToFocus?: HTMLInputElement) => void;
-  onRowSubmit: (updatedRow: CellData[]) => Promise<void>;
+  onRowSubmit: (updatedRow: CellData[], outcomeState: RoundOutcomeState) => Promise<void>;
 }
 
 const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRowSubmit }) => {
@@ -55,9 +55,9 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRo
     return false;
   };
 
-  const determineGuess = (guessedWord: string): CellData[] => {
+  const determineGuess = (guessedWord: string): [CellData[], boolean] => {
     if (wordToGuess === guessedWord) {
-      return guessedWord.split('').map(letter => ({ letter: letter.toUpperCase(), foundState: LetterFoundState.YES_SAME_INDEX }));
+      return [guessedWord.split('').map(letter => ({ letter: letter.toUpperCase(), foundState: LetterFoundState.YES_SAME_INDEX })), true];
     }
 
     const hashOfWordToGuess = createHashOfIndexes(wordToGuess);
@@ -87,10 +87,10 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRo
         });
       }
     });
-    return updatedRow;
+    return [updatedRow, updatedRow.every(c => c.foundState === LetterFoundState.YES_SAME_INDEX)];
   };
 
-  const guess = (): CellData[] | undefined => {
+  const guess = (): [CellData[], boolean] | undefined => {
     const guessedWord = board[currentRow].map(row => row.letter).join('').toLowerCase();
     if (isInvalid(guessedWord)) {
       return undefined;
@@ -100,14 +100,23 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, onChange, onRo
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('on submit', event);
-    const updatedCellData = guess();
-    if (!updatedCellData) {
+    const guessData = guess();
+    if (!guessData) {
       return;
     }
-    await onRowSubmit(updatedCellData);
-    // focus next row's first cell
-    references && references[currentRow + 1][0].current?.focus();
+    const [updatedCellData, isRightGuess] = guessData;
+    let outcome = RoundOutcomeState.INDETERMINATE;
+    if (isRightGuess) {
+      outcome = RoundOutcomeState.WON;
+    }
+    if (currentRow === board.length - 1) {
+      outcome = RoundOutcomeState.LOST;
+    }
+    await onRowSubmit(updatedCellData, outcome);
+    if (outcome === RoundOutcomeState.INDETERMINATE) {
+      // focus next row's first cell
+      references && references[currentRow + 1] && references[currentRow + 1][0].current?.focus();
+    }
   };
 
   return (<S.BoardContainer>

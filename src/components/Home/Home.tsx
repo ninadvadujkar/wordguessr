@@ -22,7 +22,7 @@ const Home = () => {
       <Form.Label>Did your friend share a game id with you? Then enter that here and enjoy the challenge! Want to challenge a friend then <Link to={'create-game'}>create a game</Link></Form.Label>
       <S.FormContainer>
         <Form.Control size="lg" type="text" placeholder="Your game id goes here..." onChange={(event) => setGameId(event.target.value)} />
-        <S.Button type="submit" variant="dark">Submit</S.Button>
+        <S.Button type="submit" variant="primary">Submit</S.Button>
       </S.FormContainer>
     </Form>
   </>);
