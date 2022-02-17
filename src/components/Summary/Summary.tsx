@@ -1,16 +1,17 @@
+import { Round } from '../../types/common.types';
 import Grid, { GridProps } from '../Grid/Grid';
 import * as S from './Summary.styles';
 
 interface Props {
-  boards: GridProps[];
+  rounds: Round[];
 }
 
-const Summary: React.FC<Props> = ({ boards }) => {
+const Summary: React.FC<Props> = ({ rounds }) => {
   return (
     <S.SummaryContainer>
-      {boards.map((board, index) => (<div key={`summary-round-${index}`}>
-        <S.Title>Round {index + 1}</S.Title>
-        <Grid {...board} />
+      {rounds.map((round, index) => (<div key={`summary-round-${index}`}>
+        <S.Title>Round {index + 1} (Correct Word: {round.wordToGuess}) (Outcome: {round.outcomeState})</S.Title>
+        <Grid board={round.board} currentRow={round.currentBoardRow} />
       </div>))}
     </S.SummaryContainer>
   );

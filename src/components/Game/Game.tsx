@@ -25,7 +25,6 @@ const Game = () => {
     }
 
     const localStorageGameState = localStorage.getItem(`gameState-${params.gameId}`);
-    console.log('asas', `gameState-${params.gameId}`, localStorageGameState);
     // reset game from last checkpoint if user refreshes or closes browser
     if (localStorageGameState) {
       setGameState(JSON.parse(localStorageGameState));
@@ -105,7 +104,7 @@ const Game = () => {
     });
     if (!outcomeIndeterminate) {      
       setTimeout(() => {
-        alert(`You ${outcome} this round. Correct word: ${gameState?.rounds[gameState?.currentRoundIndex].wordToGuess}`);
+        alert(`You ${outcome} this round. Correct word: ${gameState?.rounds[gameState?.currentRoundIndex].wordToGuess.toUpperCase()}`);
         setGameState((currentState) => {
           return {
             ...currentState,
@@ -132,8 +131,9 @@ const Game = () => {
       onChange={onChange}
       onRowSubmit={onRowSubmit}
     />}
-    {gameState && gameState.currentRoundIndex === gameState.rounds.length && <Summary boards={gameState?.rounds.map(r => ({
-      board: r.board,
+    {gameState && gameState.currentRoundIndex === gameState.rounds.length && <Summary rounds={gameState?.rounds.map(r => ({
+      ...r,
+      wordToGuess: r.wordToGuess.toUpperCase(),
       currentRow: 100
     }))} />}
   </>);
