@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { BoardData, CellData } from '../../types/common.types';
 import ToastMessage from '../Toast/Toast';
 import Grid from '../Grid/Grid';
-import { dictionary } from '../../words-dictionary';
+import { dictionary } from '../../constants/words-dictionary';
 import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { createHashOfIndexes } from '../../utils/common.utils';
 import * as S from './Board.styles';

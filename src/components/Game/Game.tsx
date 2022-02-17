@@ -12,11 +12,11 @@ const Game = () => {
   const params = useParams();
 
   useEffect(() => {
-    if (!gameState) {
+    if (!gameState || !params.gameId) {
       return;
     }
 
-    localStorage.setItem('gameState', JSON.stringify(gameState));
+    localStorage.setItem(`gameState-${params.gameId}`, JSON.stringify(gameState));
   }, [gameState]);
 
   useEffect(() => {
@@ -24,7 +24,8 @@ const Game = () => {
       return;
     }
 
-    const localStorageGameState = localStorage.getItem('gameState');
+    const localStorageGameState = localStorage.getItem(`gameState-${params.gameId}`);
+    console.log('asas', `gameState-${params.gameId}`, localStorageGameState);
     // reset game from last checkpoint if user refreshes or closes browser
     if (localStorageGameState) {
       setGameState(JSON.parse(localStorageGameState));
@@ -104,7 +105,7 @@ const Game = () => {
     });
     if (!outcomeIndeterminate) {      
       setTimeout(() => {
-        alert(`You ${outcome} this round`);
+        alert(`You ${outcome} this round. Correct word: ${gameState?.rounds[gameState?.currentRoundIndex].wordToGuess}`);
         setGameState((currentState) => {
           return {
             ...currentState,
