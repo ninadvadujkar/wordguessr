@@ -133,7 +133,7 @@ const Game = () => {
     />}
     {gameState && gameState.currentRoundIndex === gameState.rounds.length && <Summary boards={gameState?.rounds.map(r => ({
       board: r.board,
-      currentRow: 0
+      currentRow: 100
     }))} />}
   </>);
 };
