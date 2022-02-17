@@ -35,7 +35,7 @@ const CreateGame = () => {
   return (<>
     <h1>Create Game</h1>
     <Form onSubmit={onSubmit}>
-      <Form.Label>Looks like you'd like to challenge your friend to a game of Wordguessr! Enter the amount of rounds you'd like your friend to play</Form.Label>
+      <Form.Label>Looks like you'd like to challenge your friends to a game of Wordguessr! Enter the amount of rounds you'd like your friend to play</Form.Label>
       <S.FormContainer>
         <S.Control size="lg" type="number" placeholder="Number of rounds go here..." min={1} onChange={(event: any) => setNoOfRounds(event.target.value)} />
         <S.Button type="submit" variant="primary">Submit</S.Button>

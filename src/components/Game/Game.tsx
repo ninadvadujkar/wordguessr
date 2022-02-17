@@ -17,7 +17,7 @@ const Game = () => {
     }
 
     localStorage.setItem(`gameState-${params.gameId}`, JSON.stringify(gameState));
-  }, [gameState]);
+  }, [gameState, params.gameId]);
 
   useEffect(() => {
     if (!params.gameId) {

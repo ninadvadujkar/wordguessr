@@ -1,5 +1,5 @@
 import { Round } from '../../types/common.types';
-import Grid, { GridProps } from '../Grid/Grid';
+import Grid from '../Grid/Grid';
 import * as S from './Summary.styles';
 
 interface Props {
