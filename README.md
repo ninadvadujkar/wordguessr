@@ -1,5 +1,6 @@
-# Getting Started with Create React App
+# Wordguessr
 
+A game inspired by the famous Wordle game on NYTimes. I created this game so that me and my friends can challenge each other and have fun!
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
