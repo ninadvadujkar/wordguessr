@@ -13,7 +13,7 @@ const Home = () => {
       alert('Please enter a game id');
       return;
     }
-    navigate(`/game/${gameId}`);
+    navigate(`/game?gameId=${gameId}`);
   };
 
   return (<>

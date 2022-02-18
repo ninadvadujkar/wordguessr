@@ -108,7 +108,6 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, currentRound, 
       outcome = RoundOutcomeState.LOST;
     }
     await onRowSubmit(updatedCellData, outcome);
-    console.log('outcome....', outcome);
     references && references[currentRow + 1] && references[currentRow + 1][0].current?.focus();
   };
 

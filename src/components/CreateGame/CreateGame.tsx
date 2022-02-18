@@ -22,7 +22,7 @@ const CreateGame = () => {
       wordsToGuess.push(generate());
     }
     setWordsToGuess(wordsToGuess);
-    setGameUrl(`${window.location.origin}/game/${window.btoa(wordsToGuess.join(','))}`);
+    setGameUrl(`${window.location.origin}/game?gameId=${window.btoa(wordsToGuess.join(','))}`);
   };
 
   const copyToClipboard = () => {

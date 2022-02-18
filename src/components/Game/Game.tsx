@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { CellData, GameState, Round } from '../../types/common.types';
 import { isLetter } from '../../utils/common.utils';
@@ -9,22 +9,23 @@ import * as S from './Game.styles';
 
 const Game = () => {
   const [gameState, setGameState] = useState<GameState>();
-  const params = useParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    if (!gameState || !params.gameId) {
+    if (!gameState || !searchParams.get('gameId')) {
       return;
     }
 
-    localStorage.setItem(`gameState-${params.gameId}`, JSON.stringify(gameState));
-  }, [gameState, params.gameId]);
+    localStorage.setItem(`gameState-${searchParams.get('gameId')}`, JSON.stringify(gameState));
+  }, [gameState, searchParams]);
 
   useEffect(() => {
-    if (!params.gameId) {
+    const gameId = searchParams.get('gameId');
+    if (!gameId) {
       return;
     }
 
-    const localStorageGameState = localStorage.getItem(`gameState-${params.gameId}`);
+    const localStorageGameState = localStorage.getItem(`gameState-${gameId}`);
     // reset game from last checkpoint if user refreshes or closes browser
     if (localStorageGameState) {
       setGameState(JSON.parse(localStorageGameState));
@@ -32,7 +33,7 @@ const Game = () => {
     }
 
     // start fresh game
-    const decodedGameId = window.atob(params.gameId);
+    const decodedGameId = window.atob(gameId);
     const wordsToGuess = decodedGameId.split(',');
     const rounds = wordsToGuess.map((word) => {
       return {
@@ -49,7 +50,7 @@ const Game = () => {
       rounds,
       currentRoundIndex: 0
     });
-  }, [params]);
+  }, [searchParams]);
 
   const onChange = (rowIndex: number, cellIndex: number, value: string, cellToFocus?: HTMLInputElement) => {
     if (value && !isLetter(value)) {
