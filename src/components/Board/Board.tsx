@@ -103,8 +103,7 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, currentRound, 
     let outcome = RoundOutcomeState.INDETERMINATE;
     if (isRightGuess) {
       outcome = RoundOutcomeState.WON;
-    }
-    if (currentRow === board.length - 1) {
+    } else if (currentRow === board.length - 1) {
       outcome = RoundOutcomeState.LOST;
     }
     await onRowSubmit(updatedCellData, outcome);
