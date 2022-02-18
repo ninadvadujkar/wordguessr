@@ -1,5 +1,5 @@
 // copied from wordle-wars repo
-export const dictionary = [
+export const answers = [
   'vegan',
   'major',
   'cigar',
@@ -12976,3 +12976,5 @@ const allowedGuesses = [
   'zymes',
   'zymic'
 ];
+
+export const allWords = [...answers, ...allowedGuesses];

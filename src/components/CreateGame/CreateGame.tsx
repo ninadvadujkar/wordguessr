@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { dictionary } from '../../constants/words-dictionary';
+import { answers } from '../../constants/words-dictionary';
 import { randomNoRepeats } from '../../utils/common.utils';
 import * as S from './CreateGame.styles';
 
@@ -16,7 +16,7 @@ const CreateGame = () => {
       alert('Please enter number of rounds');
       return;
     }
-    const generate = randomNoRepeats(dictionary);
+    const generate = randomNoRepeats(answers);
     const wordsToGuess = [];
     for (let i = 0; i < noOfRounds; i++) {
       wordsToGuess.push(generate());

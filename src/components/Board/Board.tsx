@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { BoardData, CellData } from '../../types/common.types';
 import ToastMessage from '../Toast/Toast';
 import Grid from '../Grid/Grid';
-import { dictionary } from '../../constants/words-dictionary';
+import { allWords } from '../../constants/words-dictionary';
 import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { createHashOfIndexes } from '../../utils/common.utils';
 import * as S from './Board.styles';
@@ -42,7 +42,7 @@ const Board: React.FC<Props> = ({ board, wordToGuess, currentRow, currentRound, 
       setToastMessage('Not enough letters');
       return true;
     }
-    if (!dictionary.includes(guessedWord)) {
+    if (!allWords.includes(guessedWord)) {
       setShowToast(true);
       setToastMessage('Not in word list');
       return true;
