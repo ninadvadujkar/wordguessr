@@ -8,7 +8,7 @@ interface Props {
 }
 
 const ToastMessage: React.FC<Props> = ({ show, message, onClose }) => {
-  return <ToastContainer position="top-center">
+  return <ToastContainer position="middle-center" style={{ zIndex: 100 }}>
     <Toast onClose={onClose} show={show} delay={1000} autohide={true}>
       <Toast.Body>
         <S.Message>{message}</S.Message>
