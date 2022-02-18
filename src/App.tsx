@@ -9,7 +9,7 @@ import * as S from './App.styles';
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/wordguessr'>
       <Header />
       <S.Container>
         <Routes>
