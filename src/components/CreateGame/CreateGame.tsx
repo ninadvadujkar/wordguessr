@@ -8,8 +8,10 @@ const CreateGame = () => {
   const [noOfRounds, setNoOfRounds] = useState<number>();
   const [wordsToGuess, setWordsToGuess] = useState<string[]>();
   const [wordsHidden, setWordsHidden] = useState(true);
+  const [gameId, setGameId] = useState('');
   const [gameUrl, setGameUrl] = useState<string>();
   const gameUrlEl = useRef<HTMLSpanElement>(null);
+  const gameIdEl = useRef<HTMLSpanElement>(null);
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,14 +26,16 @@ const CreateGame = () => {
     }
     setWordsToGuess(wordsToGuess);
     setWordsHidden(true);
-    setGameUrl(`${window.location.origin}/game?gameId=${window.btoa(wordsToGuess.join(','))}`);
+    const gameId = window.btoa(wordsToGuess.join(','));
+    setGameId(gameId);
+    setGameUrl(`${window.location.origin}/game?gameId=${gameId}`);
   };
 
-  const copyToClipboard = () => {
-    if (!gameUrlEl || !gameUrlEl.current) {
+  const copyToClipboard = (el: React.RefObject<HTMLSpanElement>) => {
+    if (!el || !el.current) {
       return;
     }
-    navigator.clipboard.writeText(gameUrlEl.current.innerText);
+    navigator.clipboard.writeText(el.current.innerText);
   };
 
   return (<>
@@ -52,7 +56,10 @@ const CreateGame = () => {
     {wordsToGuess && <Button type="button" variant="light" onClick={() => setWordsHidden(false)} style={{ marginLeft: '1rem' }}>Reveal words</Button>}
     <br />
     {gameUrl && <S.Strong>Game URL: &nbsp; <span ref={gameUrlEl}>{gameUrl}</span></S.Strong>}
-    {gameUrl && <Button type="button" variant="light" onClick={copyToClipboard} style={{ marginLeft: '1rem ' }}>Copy to clipboard</Button>}
+    {gameUrl && <Button type="button" variant="light" onClick={() => copyToClipboard(gameUrlEl)} style={{ marginLeft: '1rem ' }}>Copy URL to clipboard</Button>}
+    <br />
+    {gameId && <S.Strong>Game ID: &nbsp; <span ref={gameIdEl}>{gameId}</span></S.Strong>}
+    {gameId && <Button type="button" variant="light" onClick={() => copyToClipboard(gameIdEl)} style={{ marginLeft: '1rem ' }}>Copy Game ID to clipboard</Button>}
   </>);
 };
 
