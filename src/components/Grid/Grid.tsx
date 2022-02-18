@@ -28,7 +28,7 @@ const Grid: React.FC<GridProps> = ({ board, currentRow, references, onSubmit, on
 
   return (<div>
     {board.map((row, rowIndex) => {
-      return <Form key={rowIndex} onSubmit={(e) => onSubmit && onSubmit(e)}>
+      return <Form style={{ position: 'relative' }} key={rowIndex} onSubmit={(e) => onSubmit && onSubmit(e)}>
         <S.Row key={`row-${rowIndex}`}>
           {row.map((cell, cellIndex) => <Cell
             key={`cell-${rowIndex}-${cellIndex}`}
@@ -44,7 +44,7 @@ const Grid: React.FC<GridProps> = ({ board, currentRow, references, onSubmit, on
               )}
           />)}
         </S.Row>
-        <button type="submit" hidden disabled={rowIndex !== currentRow} aria-hidden="true"></button>
+        <S.SubmitButton type="submit" disabled={rowIndex !== currentRow} aria-hidden="true"></S.SubmitButton>
       </Form>;
     })}
   </div>);
