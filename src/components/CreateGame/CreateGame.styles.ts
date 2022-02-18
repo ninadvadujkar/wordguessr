@@ -8,11 +8,11 @@ export const FormContainer = styled.div`
 `;
 
 export const Button = styled(BootstrapButton)`
-  width: 100px;
+  max-width: 100px;
 `;
 
 export const Control = styled(Form.Control)`
-  width: 20rem;
+  max-width: 20rem;
 `
 
 export const Strong = styled.strong`
