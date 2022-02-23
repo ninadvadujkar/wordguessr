@@ -123,7 +123,11 @@ const Game = () => {
 
   const shareResult = () => {
     const result = gameState?.rounds.map((r, i) => {
-      return `Round ${i + 1}/${gameState?.rounds.length}\n\n${r.board.map(row => {
+      const foundRow = r.board.findIndex(row => {
+        const rowFoundStates = row.map(i => i.foundState).filter(i => i === LetterFoundState.YES_SAME_INDEX);
+        return rowFoundStates.length === 5;
+      });
+      return `Round ${i + 1}/${gameState?.rounds.length} ${foundRow !== -1 ? `${foundRow + 1}/6` : `LOST`} \n\n${r.board.map(row => {
           return row.map(i => {
             switch (i.foundState) {
               case LetterFoundState.NO:
