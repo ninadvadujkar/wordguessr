@@ -6,11 +6,14 @@ import { CellData, GameState, Round } from '../../types/common.types';
 import { isLetter } from '../../utils/common.utils';
 import Board from '../Board/Board';
 import Summary from '../Summary/Summary';
+import ToastMessage from '../Toast/Toast';
 import * as S from './Game.styles';
 
 const Game = () => {
   const [gameState, setGameState] = useState<GameState>();
   const [searchParams] = useSearchParams();
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     if (!gameState || !searchParams.get('gameId')) {
@@ -142,9 +145,12 @@ const Game = () => {
     const finalResult = `Wordguessr\n\n${result}`;
     console.log(finalResult);
     navigator.clipboard.writeText(finalResult);
+    setShowToast(true);
+    setToastMessage('Result copied to clipboard!');
   };
 
   return (<>
+    <ToastMessage show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />
     {gameState &&
       <S.Title>{
         gameState.currentRoundIndex === gameState.rounds.length ?
