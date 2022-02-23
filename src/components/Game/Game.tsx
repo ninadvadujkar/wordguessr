@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
 import { useSearchParams } from "react-router-dom"
 import { LetterFoundState, RoundOutcomeState } from '../../enums/common.enums';
 import { CellData, GameState, Round } from '../../types/common.types';
@@ -117,11 +118,37 @@ const Game = () => {
     return;
   };
 
+  const shareResult = () => {
+    const result = gameState?.rounds.map((r, i) => {
+      return `Round ${i + 1}/${gameState?.rounds.length}\n\n${r.board.map(row => {
+          return row.map(i => {
+            switch (i.foundState) {
+              case LetterFoundState.NO:
+                return '⬛';
+              case LetterFoundState.YES_NO_SAME_INDEX:
+                return '🟨';
+              case LetterFoundState.YES_SAME_INDEX:
+                return '🟩';
+              default:
+                return '';
+            }
+          }).join('');
+        }).join('\n')}
+      `;
+    }).join('\n');
+    if (!result) {
+      return;
+    }
+    const finalResult = `Wordguessr\n\n${result}`;
+    console.log(finalResult);
+    navigator.clipboard.writeText(finalResult);
+  };
+
   return (<>
     {gameState &&
       <S.Title>{
         gameState.currentRoundIndex === gameState.rounds.length ?
-          'Summary' :
+          <div>Summary <Button type="button" variant="primary" onClick={() => shareResult()}>Share Result</Button></div> :
           `Round ${gameState.currentRoundIndex + 1} / ${gameState.rounds.length}`}
       </S.Title>}
     {gameState && gameState.currentRoundIndex !== gameState.rounds.length && <Board
